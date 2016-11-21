@@ -1,3 +1,7 @@
+#ifndef TTNODE_H
+#define TTNODE_H
+#include "TTNode.h"
+
 template <typename Key, typename E>
 class TTTree {
 	E findHelp(TTNode<Key, E>* root, Key k) const;
@@ -23,12 +27,12 @@ E TTTree<Key, E>::findHelp(TTNode<Key, E>* root, Key k) const {
 }
 
 template <typename Key, typename E>
-TTNode<Key, E>* TTTree<Key, E>::insertHelp(TTNode<Key, E>* rt, const Key, k, const E e) {
+TTNode<Key, E>* TTTree<Key, E>::insertHelp(TTNode<Key, E>* rt, const Key k, const E e) {
 	TTNode<Key, E>* retval;
 	if (rt == NULL)
 		return new TTNode<Key, E>(k, e, EMPTYKEY, NULL, NULL, NULL, NULL);
 	if (rt->ifLeaf())
-		return rt->add(new TTNode<Key, E>(k, e, EMPTYKEY, NULL, NULL, NULL, NULL);
+		return rt->add(new TTNode<Key, E>(k, e, EMPTYKEY, NULL, NULL, NULL, NULL));
 	if (k < rt->lkey) {
 		retval = insertHelp(rt->left, k, e);
 		if (retval == rt->left)
@@ -51,3 +55,4 @@ TTNode<Key, E>* TTTree<Key, E>::insertHelp(TTNode<Key, E>* rt, const Key, k, con
 			return rt->add(retval);
 	}
 }
+#endif
