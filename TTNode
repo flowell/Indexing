@@ -1,0 +1,60 @@
+template <typename Key, typename E>
+class TTNode {
+public:
+	E lval;
+	Key lkey;
+	E rval;
+	Key rkey;
+	
+	TTNode* left;
+	TTNode* center;
+	TTNode* right;
+	
+	TTNode();
+	TTNode(Key lk, E lv, Key rk, E rv, TTNode<Key, E>* pl, TTNode<Key, E>* p2, TTNode<Key, E>* p3);
+	~TTNode();
+	
+	bool isLeaf();
+	TTNode<Key, E>* add(TTNode<Key, E>* it);
+};
+
+template <typename Key, typename E>
+TTNode<Key, E>::TTNode() {
+	left = center = right = NULL;
+	lkey = rkey = EMPTYKEY;
+}
+
+template <typename Key, typename E>
+TTNode<Key, E>::TTNode(Key lk, E lv, Key rk, E rv, TTNode<Key, E>* pl, TTNode<Key, E>* p2, TTNode<Key, E>* p3) {
+	lkey = lk;	rkey = rk;
+	lval = lv;	rval = rv;
+	left = p1; center = p2; right = p3;
+}
+
+template <typename Key, typename E>
+bool TTNode<Key，E>::isLeaf() {
+	return left == NULL;
+}
+
+template <typename Key, typename E>
+TTNode<Key, e>* TTNode<Key, E>::add(TTNode<Key, E>* it) {
+	if (key == EMPTYKEY) {
+		if (lkey < it->lkey) {
+			rkey = it->lkey;
+			rval = it->lval;
+			right = center;
+			center = it->center;
+		}
+		else {
+			rkey = lkey;
+			rval = lval;
+			right = center;
+			lkey = it->lkey;
+			lval = it->lval;
+			center = it->center;
+		}
+		return this;
+	}
+	else if (lkey >= it->lkey) {
+		center = new TTNode<Key, E>(rkey, rval, 
+	
