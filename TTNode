@@ -1,3 +1,5 @@
+#ifndef TTTREE_H
+#define TTTREE_H
 template <typename Key, typename E>
 class TTNode {
 public:
@@ -32,12 +34,12 @@ TTNode<Key, E>::TTNode(Key lk, E lv, Key rk, E rv, TTNode<Key, E>* pl, TTNode<Ke
 }
 
 template <typename Key, typename E>
-bool TTNode<Key，E>::isLeaf() {
+bool TTNode<Key, E>::isLeaf() {
 	return left == NULL;
 }
 
 template <typename Key, typename E>
-TTNode<Key, e>* TTNode<Key, E>::add(TTNode<Key, E>* it) {
+TTNode<Key, E>* TTNode<Key, E>::add(TTNode<Key, E>* it) {
 	if (key == EMPTYKEY) {
 		if (lkey < it->lkey) {
 			rkey = it->lkey;
@@ -56,5 +58,29 @@ TTNode<Key, e>* TTNode<Key, E>::add(TTNode<Key, E>* it) {
 		return this;
 	}
 	else if (lkey >= it->lkey) {
-		center = new TTNode<Key, E>(rkey, rval, 
-	
+		center = new TTNode<Key, E>(rkey, rval, EMPTYKEY, NULL, center, right, NULL);
+		rkey = EMPTYKEY;
+		rval = NULL;
+		right = NULL;
+		it->left = left;
+		left = it;
+		return this;
+	}
+	else if (rkey < it->lkey) {
+		it->center = new TTNode<Key, E>(rkey, rval, EMPTYKEY, NULL, it->center, right, NULL);
+		it->left = this;
+		rkey = EMPTYKEY;
+		rval = NULL;
+		right = NULL;
+		return it;
+	}
+	else {
+		TTNode<Key, E>* N1 = new TTNode<Key, E>(rkey, rval, EMPTYKEY, NULL, this, it, NULL);
+		it->left = right;
+		right = NULL;
+		rkey = EMPTYKEY;
+		rval = NULL;
+		return N1;
+	}
+}
+#endif
