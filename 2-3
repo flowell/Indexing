@@ -1,0 +1,96 @@
+template <class Key, class Elem>
+bool TTTree<Key, Elem>::
+inserthelp(TTNode<Elem>*& subroot,  const Elem& e,
+           Elem& retval,  TTNode<Elem>*& retptr) 
+{
+  	Elem myretv;     
+	TTNode<Elem>* myretp = NULL;
+    if (subroot = = NULL)                      // Empty tree: make new node
+    { subroot = new TTNode<Elem>( );      subroot->lkey = e; }
+  Elem myretv;     TTNode<Elem>* myretp = NULL;
+  if (subroot = = NULL)                      // Empty tree: make new node
+    { subroot = new TTNode<Elem>( );      subroot->lkey = e; }
+  else if (subroot->isLeaf( ))                    // At leaf node: insert here
+             if (subroot->rkey = = EMPTY) {    // Easy case: not full
+                      if (subroot->lkey < e) 
+                                  subroot->rkey = e;
+                      else {subroot->rkey = subroot->lkey;  
+                             subroot->lkey = e; }
+              }
+             else  splitnode(subroot, e, NULL, retval, retptr);
+   
+   …   …    …  
+   else if (e < subroot->lkey)       // Insert in left child
+             inserthelp(subroot->left, e, myretv, myretp);
+   …   …    …  
+else if ((subroot->rkey = = EMPTY) ||
+                    (e < subroot->rkey ))
+               inserthelp(subroot->center, e, myretv, myretp);
+else inserthelp(subroot->right, e, myretv, myretp);
+   …   …    …  
+else if ((subroot->rkey = = EMPTY) ||
+                    (subroot->rkey > getkey(e)))
+               inserthelp(subroot->center, e, myretv, myretp);
+else inserthelp(subroot->right, e, myretv, myretp);
+if (myretp != NULL)              
+     if (subroot->rkey != EMPTY)  // Full: split node
+            splitnode(subroot, myretv, myretp, retval, retptr);
+if (myretp != NULL)             // Child split: receive promoted value
+    … … … … 
+    else { // Not full: add to this node
+         if (myretv < subroot->lkey)) {
+              	subroot->rkey = subroot->lkey;
+        		subroot->lkey = myretv;
+       		 subroot->right = subroot->center;
+        		subroot->center = myretp;
+         }
+           else
+                { subroot->rkey = myretv; subroot->right = myretp; }  
+      }
+  return true;
+}
+
+
+
+
+
+
+//*********************************************************************************************
+
+
+
+
+template <class Key, class Elem>
+splitnode(TTNode<Elem>* subroot, const Elem& inval,
+   TTNode<Elem>*inptr, Elem& retval,  TTNode<Elem>*& retptr){
+  retptr = new TTNode<Elem>( );                 // Node created by split
+  if (inval < subroot->lkey)) {     // Add at left
+     retval = subroot->lkey;                    subroot->lkey = inval;
+     retptr->lkey = subroot->rkey;         retptr->left = subroot->center;
+     retptr->center = subroot->right;     subroot->center = inptr; }
+… … … … 
+  else if (inval <  subroot->rkey)) {   // Center
+             retval = inval;                      retptr->lkey = subroot->rkey;
+             retptr->left = inptr;            retptr->center = subroot->right;  }
+… … … …
+else {    // Add at right
+             retval = subroot->rkey;                retptr->lkey = inval;
+             retptr->left = subroot->right;       retptr->center = inptr;  }
+      subroot->rkey = EMPTY;
+}
+
+
+
+//*****************************************************************************************************
+
+ bool insert(const Elem& e) { // Insert node with value val
+        Elem retval;               // Smallest value in newly created node
+       TTNode<Elem>* retptr = NULL; // Newly created node
+       bool inssucc = inserthelp(root, e, retval, retptr);
+       i f (retptr != NULL) {      // Root overflowed: make new root
+          TTNode<Elem>* temp = new TTNode<Elem>;  temp->lkey = retval;
+          temp->left = root; temp->center = retptr;
+          root = temp;
+        }
+     return inssucc;
+  }
