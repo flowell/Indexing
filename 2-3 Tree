@@ -4,26 +4,28 @@
 
 template <typename Key, typename E>
 class TTTree {
-	E findHelp(TTNode<Key, E>* root, Key k) const;
+public:
+	TTTree();
+	void insert(Key k, E e);
+	void print();
+
+private:
+	TTNode<Key, E>* root;
+	int count;
 	TTNode<Key, E>* insertHelp(TTNode<Key, E>* rt, const Key k, const E e);
+	E findHelp(TTNode<Key, E>* root, Key k) const;
 };
 
 template <typename Key, typename E>
-E TTTree<Key, E>::findHelp(TTNode<Key, E>* root, Key k) const {
-	if (root == NULL)
-		return NULL;
-	if (k == root->lkey)
-		return root->lval;
-	if (k == root->rkey)
-		return root->rval;
-	if (k < root->lkey)
-		return findHelp(root->left, k);
-	else if (root->rkey == EMPTYKEY)
-		return findHelp(root->center, k);
-		else if (k < root->rkey)
-			return findHelp(root->center, k);
-		else
-			return findHelp(root->right, k);
+TTTree<Key, E>::TTTree() {
+	root = NULL;
+	count = 0;
+}
+
+template <typename Key, typename E>
+void TTTree<Key, E>::insert(Key k, E e) {
+	root = insertHelp(root, k, e);
+	++count;
 }
 
 template <typename Key, typename E>
@@ -31,7 +33,7 @@ TTNode<Key, E>* TTTree<Key, E>::insertHelp(TTNode<Key, E>* rt, const Key k, cons
 	TTNode<Key, E>* retval;
 	if (rt == NULL)
 		return new TTNode<Key, E>(k, e, EMPTYKEY, NULL, NULL, NULL, NULL);
-	if (rt->ifLeaf())
+	if (rt->isLeaf())
 		return rt->add(new TTNode<Key, E>(k, e, EMPTYKEY, NULL, NULL, NULL, NULL));
 	if (k < rt->lkey) {
 		retval = insertHelp(rt->left, k, e);
@@ -55,4 +57,58 @@ TTNode<Key, E>* TTTree<Key, E>::insertHelp(TTNode<Key, E>* rt, const Key k, cons
 			return rt->add(retval);
 	}
 }
+
+template <typename Key, typename E>
+E TTTree<Key, E>::findHelp(TTNode<Key, E>* root, Key k) const {
+	if (root == NULL)
+		return NULL;
+	if (k == root->lkey)
+		return root->lval;
+	if (k == root->rkey)
+		return root->rval;
+	if (k < root->lkey)
+		return findHelp(root->left, k);
+	else if (root->rkey == EMPTYKEY)
+		return findHelp(root->center, k);
+		else if (k < root->rkey)
+			return findHelp(root->center, k);
+		else
+			return findHelp(root->right, k);
+}
+
+//从上往下从左往右一层一层输出元素
+template <typename Key, typename E>
+void TTTree<Key, E>::print() {
+	E a[1000];
+	TTNode<Key, E>* q[1000];
+	q[0] = root;
+	int curr = 0;
+	int tail = 0;
+	
+	for (int i = 0; i < count; ) {
+
+		if (q[curr]->lkey != EMPTYKEY)
+			a[i++] = q[curr]->lval;
+		if (q[curr]->rkey != EMPTYKEY)
+			a[i++] = q[curr]->rval;
+
+		if (q[curr]->left != NULL)
+			q[++tail] = q[curr]->left;
+		if (q[curr]->center != NULL)
+			q[++tail] = q[curr]->center;
+		if (q[curr]->right != NULL)
+			q[++tail] = q[curr]->right;
+
+		++curr;
+
+	}
+
+	for (int i = 0; i < count; ++i) {
+		std::cout << a[i];
+		if ( i != count - 1)
+			std::cout << ' ';
+	}
+	std::cout << '\n';
+}
+
 #endif
