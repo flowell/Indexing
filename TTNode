@@ -1,5 +1,8 @@
 #ifndef TTTREE_H
 #define TTTREE_H
+#define EMPTYKEY -1
+#define NULL 0
+
 template <typename Key, typename E>
 class TTNode {
 public:
@@ -27,7 +30,7 @@ TTNode<Key, E>::TTNode() {
 }
 
 template <typename Key, typename E>
-TTNode<Key, E>::TTNode(Key lk, E lv, Key rk, E rv, TTNode<Key, E>* pl, TTNode<Key, E>* p2, TTNode<Key, E>* p3) {
+TTNode<Key, E>::TTNode(Key lk, E lv, Key rk, E rv, TTNode<Key, E>* p1, TTNode<Key, E>* p2, TTNode<Key, E>* p3) {
 	lkey = lk;	rkey = rk;
 	lval = lv;	rval = rv;
 	left = p1; center = p2; right = p3;
@@ -40,12 +43,11 @@ bool TTNode<Key, E>::isLeaf() {
 
 template <typename Key, typename E>
 TTNode<Key, E>* TTNode<Key, E>::add(TTNode<Key, E>* it) {
-	if (key == EMPTYKEY) {
+	if (rkey == EMPTYKEY) {
 		if (lkey < it->lkey) {
 			rkey = it->lkey;
 			rval = it->lval;
-			right = center;
-			center = it->center;
+			right = it->center;
 		}
 		else {
 			rkey = lkey;
@@ -57,16 +59,18 @@ TTNode<Key, E>* TTNode<Key, E>::add(TTNode<Key, E>* it) {
 		}
 		return this;
 	}
-	else if (lkey >= it->lkey) {
-		center = new TTNode<Key, E>(rkey, rval, EMPTYKEY, NULL, center, right, NULL);
+	else if (it->lkey <= lkey) {
+		TTNode<Key, E>* mid = new TTNode<Key, E>(lkey, lval, EMPTYKEY, NULL, this, new TTNode<Key, E>(rkey, rval, EMPTYKEY, NULL, center, right, NULL), NULL);
+		lkey = it->lkey;
+		lval = it->lval;
 		rkey = EMPTYKEY;
 		rval = NULL;
+		left = it->left;
+		center = it->center;
 		right = NULL;
-		it->left = left;
-		left = it;
-		return this;
+		return mid;
 	}
-	else if (rkey < it->lkey) {
+	else if (it->lkey <= rkey) {
 		it->center = new TTNode<Key, E>(rkey, rval, EMPTYKEY, NULL, it->center, right, NULL);
 		it->left = this;
 		rkey = EMPTYKEY;
@@ -75,12 +79,11 @@ TTNode<Key, E>* TTNode<Key, E>::add(TTNode<Key, E>* it) {
 		return it;
 	}
 	else {
-		TTNode<Key, E>* N1 = new TTNode<Key, E>(rkey, rval, EMPTYKEY, NULL, this, it, NULL);
-		it->left = right;
+		TTNode<Key, E>* mid = new TTNode<Key, E>(rkey, rval, EMPTYKEY, NULL, this, it, NULL);
 		right = NULL;
 		rkey = EMPTYKEY;
 		rval = NULL;
-		return N1;
+		return mid;
 	}
 }
 #endif
